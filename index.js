@@ -30,11 +30,17 @@ console.log('örnek görev:', ilkiniDon(['as','sa'],function(metin){return metin
   Aşağıdaki skor1 ve skor2 kodlarını inceleyiniz ve aşağıdaki soruları altına not alarak cevaplayın
   
   1. skor1 ve skor2 arasındaki fark nedir?
+  skor1'de skorArtirici fonksiyonunu içine return function tanımlanarak bir closure oluşturulmuş ve skor değeri sınırlandırılmıştır. skor2'de ise istendiğinde skor değeri değiştirilebilir.
+  skor1 değerini return fonksiyondan alıyor, skor2 ise direkt olarak skor2 fonksiyonundan alıyor.
   
   2. Hangisi bir closure kullanmaktadır? Nasıl tarif edebilirsin? (yarınki derste öğreneceksin :) )
+  skor1 closure kullanmaktadır. return function ile skor değeri sınırlandırılmaktadır
   
   3. Hangi durumda skor1 tercih edilebilir? Hangi durumda skor2 daha mantıklıdır?
-*/
+  skor1'de tanımlanan fonksiyonu kendi scope'u dışında bir scope'dan çalıştırıldığında burada tanımlanan değişkenleri ve diğer fonksiyonları saklı tutar ve çağırıldığı yerde erişileblir, başka bir işlemde kullanılması gereken bilgiler içeriyorsa skor1 tercih edilir.
+  ama fonksiyon içindeki değerlere başka bir fonksiyonda erişmemize gerek yoksa skor2'ye tercih ederiz
+ 
+  */
 
 // skor1 kodları
 function skorArtirici() {
@@ -64,10 +70,12 @@ Aşağıdaki takimSkoru() fonksiyonununda aşağıdakileri yapınız:
 Not: Bu fonskiyon, aşağıdaki diğer görevler için de bir callback fonksiyonu olarak da kullanılacak
 */
 
-function takimSkoru(/*Kodunuzu buraya yazınız*/){
-    /*Kodunuzu buraya yazınız*/
+function takimSkoru(){
+    const min = 10
+    const max = 25
+    return Math.floor(Math.random() * (max - min+1)) + min; 
 }
-
+//console.log(takimSkoru());
 
 
 
@@ -86,13 +94,17 @@ Aşağıdaki macSonucu() fonksiyonununda aşağıdakileri yapınız:
 }
 */ 
 
-function macSonucu(/*Kodunuzu buraya yazınız*/){
-  /*Kodunuzu buraya yazınız*/
+function macSonucu(takimSkoru,ceyrek){
+  let evSahibi = 0;
+  let konukTakim = 0;
+for (let i = 1; i<=ceyrek;i++){
+  evSahibi += takimSkoru();
+  konukTakim += takimSkoru();
 }
-
-
-
-
+const sonuc = {"EvSahibi": evSahibi, "KonukTakim":konukTakim,}
+return sonuc;
+}
+//console.log(macSonucu(takimSkoru,4))
 
 
 /* Zorlayıcı Görev 4: periyotSkoru()
@@ -108,11 +120,10 @@ Aşağıdaki periyotSkoru() fonksiyonununda aşağıdakileri yapınız:
 }
   */
 
-
-function periyotSkoru(/*Kodunuzu buraya yazınız*/) {
-  /*Kodunuzu buraya yazınız*/
-
+function periyotSkoru(takimSkoru) {
+  return {"EvSahibi":takimSkoru(),"KonukTakim":takimSkoru()};
 }
+//console.log(periyotSkoru(takimSkoru))
 
 
 /* Zorlayıcı Görev 5: skorTabelasi() 
@@ -146,12 +157,31 @@ MAÇ UZAR ise skorTabelasi(periyotSkoru,takimSkoru,4)
 ] */
 // NOTE: Bununla ilgili bir test yoktur. Eğer logladığınız sonuçlar yukarıdakine benziyor ise tmamlandı sayabilirsiniz.
 
-function skorTabelasi(/*Kodunuzu buraya yazınız*/) {
-  /*Kodunuzu buraya yazınız*/
+function skorTabelasi(periyotSkoru, takimSkoru, ceyrek) {
+  let evSahibi = 0;
+  let konukTakim = 0;
+  const sonuc = [];
+  for (let i = 1; i<=ceyrek;i++){
+    let periyotSonuc = periyotSkoru(takimSkoru);
+    evSahibi += periyotSonuc.EvSahibi;
+    konukTakim += periyotSonuc.KonukTakim;
+    let yazi = i + ". Periyot: Ev Sahibi " + periyotSonuc.EvSahibi  + " - Konuk Takım " + periyotSonuc.EvSahibi;
+    sonuc.push(yazi);
+  }
+  let i = 1;
+  while(evSahibi==konukTakim){
+    let periyotSonuc = periyotSkoru(takimSkoru);
+    evSahibi += periyotSonuc.EvSahibi;
+    konukTakim += periyotSonuc.KonukTakim;
+    let yazi = i + ". Uzatma: Ev Sahibi " + periyotSonuc.EvSahibi  + " - Konuk Takım " + periyotSonuc.EvSahibi;
+    sonuc.push(yazi);
+    i++
+  }
+  const macSonucu = "Maç Sonucu: Ev Sahibi " + evSahibi +  " - Konuk Takım "+ konukTakim;
+  sonuc.push(macSonucu);
+  return sonuc;
 }
-
-
-
+//console.log(skorTabelasi(periyotSkoru,takimSkoru,4))
 
 /* Aşağıdaki satırları lütfen değiştirmeyiniz*/
 function sa(){
